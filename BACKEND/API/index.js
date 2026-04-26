@@ -30,6 +30,8 @@ mongoose.connect(mongoURL)
 
 const PORT = process.env.PORT || 3000;
 
+// LINHA 33: Sem aspas no PORT!
 app.listen(PORT, '0.0.0.0', () => {
+    // LINHA 34: Use CRASES (acento grave `), não aspas comuns (')
     console.log(`Servidor rodando com sucesso na porta ${PORT}`);
 });
