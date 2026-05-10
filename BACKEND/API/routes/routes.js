@@ -135,13 +135,25 @@ return res.json({ auth: true, token: token });
 res.status(500).json({ message: 'Login invalido!' });
 })
 
+// Nova forma de Autorizacao (CORRIGIDA)
 function verificaJWT(req, res, next) {
-const token = req.headers['id-token'];
-if (!token) return res.status(401).json({
-auth: false, message: 'Token nao fornecido'
-});
+    const token = req.headers['id-token'];
+    
+    if (!token) {
+        return res.status(401).json({
+            auth: false, 
+            message: 'Token nao fornecido'
+        });
+    }
+
+    // O jwt.verify DEVE ficar dentro da função verificaJWT
+    jwt.verify(token, 'segredo', function (err, decoded) {
+        if (err) {
+            return res.status(500).json({ auth: false, message: 'Falha na autenticação do token!' });
+        }
+        
+        // Se estiver tudo ok, salva o id no request para uso futuro (opcional)
+        req.userId = decoded.id; 
+        next(); // Autoriza a continuação para a rota
+    });
 }
-jwt.verify(token,'segredo', function (err, decoded) {
-if (err) return res.status(500).json({ auth: false, message: 'Falha !' });
-next();
-})
