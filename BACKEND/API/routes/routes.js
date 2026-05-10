@@ -43,7 +43,7 @@ router.post('/post', async (req, res) => {
 
 // Define uma rota do tipo GET no caminho '/getAll'
 // Essa rota será chamada quando o cliente quiser buscar todas as tarefas
-router.get('/getAll', verificaUsuarioSenha, async (req, res) => {
+router.get('/getAll', verificaJWT, async (req, res) => {
 
     try {
         // Busca todos os documentos da coleção "Tarefa" no MongoDB
@@ -133,4 +133,15 @@ const token = jwt.sign({ id: req.body.nome }, 'segredo', { expiresIn: 300 });
 return res.json({ auth: true, token: token });
 }
 res.status(500).json({ message: 'Login invalido!' });
+})
+
+function verificaJWT(req, res, next) {
+const token = req.headers['id-token'];
+if (!token) return res.status(401).json({
+auth: false, message: 'Token nao fornecido'
+});
+}
+jwt.verify(token,'segredo', function (err, decoded) {
+if (err) return res.status(500).json({ auth: false, message: 'Falha !' });
+next();
 })
