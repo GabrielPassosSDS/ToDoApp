@@ -43,7 +43,7 @@ router.post('/post', async (req, res) => {
 
 // Define uma rota do tipo GET no caminho '/getAll'
 // Essa rota será chamada quando o cliente quiser buscar todas as tarefas
-router.get('/getAll', async (req, res) => {
+router.get('/getAll', verificaUsuarioSenha, async (req, res) => {
 
     try {
         // Busca todos os documentos da coleção "Tarefa" no MongoDB
@@ -118,3 +118,10 @@ router.patch('/update/:id', async (req, res) => {
         res.status(400).json({ message: error.message })
     }
 })
+
+function verificaUsuarioSenha(req, res, next) {
+if (req.body.nome !== 'branqs' || req.body.senha !== '1234') {
+return res.status(401).json({ auth: false, message: 'Usuario ou Senha incorreta' });
+}
+next();
+}
