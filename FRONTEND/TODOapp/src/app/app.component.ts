@@ -52,12 +52,20 @@ this.http.get<Tarefa[]>(`${this.apiURL}/api/getAll`, { 'headers': idToken }).sub
  resultado => { console.log(resultado); this.READ_tarefas(); });
  }
 
- login(username: string, password: string) {
-var credenciais = { "nome": username, "senha": password }
-this.http.post(`${this.apiURL}/api/login`, credenciais).subscribe(resultado => {
-this.tokenJWT = JSON.stringify(resultado);
-this.READ_tarefas();
-});
+login(username: string, password: string) {
+  const credenciais = { "nome": username, "senha": password };
+  
+  this.http.post(`${this.apiURL}/api/login`, credenciais).subscribe({
+    next: (resultado: any) => {
+      console.log('Token recebido:', resultado); // Adicione este log para testar
+      this.tokenJWT = JSON.stringify(resultado);
+      this.READ_tarefas(); // Chama a função que lista as tarefas e muda o login para true
+    },
+    error: (err) => {
+      console.error('Erro no login:', err);
+      alert('Usuário ou senha inválidos!');
+    }
+  });
 }
 
 }
