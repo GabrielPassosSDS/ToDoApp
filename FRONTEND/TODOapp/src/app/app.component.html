@@ -1,7 +1,6 @@
-<div class="main">
+<div class="main" *ngIf="usuarioLogado()">
   <h1>Mozilla Dev - My To Do List</h1>
-  <div *ngIf="usuarioLogado()"></div>
-
+  
   <input class="lg-text-input" #campoNovoItem />
   <button class="btn-primary" (click)="CREATE_tarefa(campoNovoItem.value); campoNovoItem.value=''">
     Adicionar Tarefa
@@ -17,9 +16,11 @@
     </li>
   </ul>
 </div>
-  <div *ngIf="!usuarioLogado()">
+
+<div class="main" *ngIf="!usuarioLogado()">
+    <h1>Login</h1>
     <input #username placeholder="nome" class="lg-text-input" />
-    <BR>
-    <input #password placeholder="senha" class="lg-text-input" />
-    <button class="btn-primary" >Login</button>
+    <br>
+    <input #password type="password" placeholder="senha" class="lg-text-input" />
+    <button class="btn-primary" (click)="login(username.value, password.value)">Login</button>
 </div>

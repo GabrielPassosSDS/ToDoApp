@@ -7,11 +7,17 @@ const mongoose = require('mongoose');
 // Middleware para CORS
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader('Access-Control-Allow-Methods', 'HEAD, GET, POST, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Methods', 'HEAD, GET, POST, PATCH, DELETE, OPTIONS'); // Adicionei OPTIONS aqui
     res.header(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept, id-token"
     );
+
+    // Se for uma requisição do tipo OPTIONS, responde 200 e para por aqui
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+
     next();
 });
 
