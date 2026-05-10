@@ -125,3 +125,12 @@ return res.status(401).json({ auth: false, message: 'Usuario ou Senha incorreta'
 }
 next();
 }
+
+var jwt = require('jsonwebtoken');
+router.post('/login', (req, res, next) => {
+if (req.body.nome === 'branqs' && req.body.senha === '1234') {
+const token = jwt.sign({ id: req.body.nome }, 'segredo', { expiresIn: 300 });
+return res.json({ auth: true, token: token });
+}
+res.status(500).json({ message: 'Login invalido!' });
+})
