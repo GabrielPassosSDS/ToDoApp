@@ -119,20 +119,23 @@ router.patch('/update/:id', async (req, res) => {
     }
 })
 
-function verificaUsuarioSenha(req, res, next) {
-if (req.body.nome !== 'branqs' || req.body.senha !== '1234') {
-return res.status(401).json({ auth: false, message: 'Usuario ou Senha incorreta' });
-}
-next();
-}
-
+//Segunda forma de Autenticacao - Busca usuário no BD e compara senha
+const userModel = require('../models/user');
 var jwt = require('jsonwebtoken');
-router.post('/login', (req, res, next) => {
-if (req.body.nome === 'branqs' && req.body.senha === '1234') {
-const token = jwt.sign({ id: req.body.nome }, 'segredo', { expiresIn: 300 });
-return res.json({ auth: true, token: token });
-}
-res.status(500).json({ message: 'Login invalido!' });
+router.post('/login', async (req, res) => {
+ try {
+ const data = await userModel.findOne({ 'nome': req.body.nome });
+ 
+ if (data != null && data.senha === req.body.senha) {
+ const token = jwt.sign({ id: req.body.user }, 'segredo',
+ { expiresIn: 300 });
+ return res.json({ token: token });
+ }
+ 
+ res.status(500).json({ message: 'Login invalido!' });
+ } catch (error) {
+ res.status(500).json({ message: error.message })
+ }
 })
 
 // Nova forma de Autorizacao (CORRIGIDA)
